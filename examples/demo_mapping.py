@@ -9,10 +9,9 @@ Usage:
     uv run python examples/demo_mapping.py
 """
 
-import shutil
 from pathlib import Path
 
-from calmate import MappingStore, get_backend, map_labels
+from calmate import MappingStore, apply_labels, get_backend, map_labels
 
 DEMO_DIR = Path("examples/_demo_output")
 
@@ -40,10 +39,6 @@ PREDICTED_LABELS = [
 def main() -> None:
     store_path = DEMO_DIR / "mappings.csv"
     cache_dir = DEMO_DIR / "cache"
-
-    # Wipe previous demo output so re-runs start fresh
-    if DEMO_DIR.exists():
-        shutil.rmtree(DEMO_DIR)
 
     store = MappingStore(store_path)
 
@@ -73,19 +68,37 @@ def main() -> None:
         backend=backend_name,
     )
 
+    # ------------------------------------------------------------------
+    # Apply the mappings back to the predicted labels
+    # ------------------------------------------------------------------
     print()
     print("=" * 60)
-    print("Done!  Next steps:")
-    print()
-    print(f"  1. Check the store status:")
-    print(f"     uv run calmate --store {store_path} status")
-    print()
-    print(f"  2. Interactively review unreviewed mappings:")
-    print(f"     uv run calmate --store {store_path} review")
-    print()
-    print(f"  3. Or open the CSV directly:")
-    print(f"     {store_path}")
+    print("Applying mappings to predicted labels")
     print("=" * 60)
+    print()
+
+    result = apply_labels(PREDICTED_LABELS, store)
+
+    for orig, mapped in zip(PREDICTED_LABELS, result.mapped_labels):
+        tag = " (unchanged)" if orig == mapped else ""
+        print(f"  {orig:30s} -> {mapped}{tag}")
+
+    print()
+    print(result.message)
+
+    if result.has_warnings:
+        print()
+        print("-" * 60)
+        print("Next steps to resolve warnings:")
+        print()
+        print(f"  1. Interactively review unreviewed mappings:")
+        print(f"     uv run calmate --store {store_path} review")
+        print()
+        print(f"  2. Re-run this script to see clean output.")
+        print("-" * 60)
+    else:
+        print()
+        print("All labels mapped -- no warnings.")
 
 
 if __name__ == "__main__":
