@@ -166,9 +166,9 @@ def review_interactive(
                 # Undo approval if the previous mapping was approved in this session
                 prev_idx, prev_row = rows[pos - 1]
                 prev_label = _str(prev_row["predicted_label"])
-                current_data = store.get_all()
+                current_data = store.load()
                 mask = current_data["predicted_label"] == prev_label
-                if mask.any() and current_data.loc[mask, "reviewed"].iloc[0]:
+                if mask.any() and current_data.loc[mask, "reviewed"].astype(str).str.lower().isin(["true", "1", "yes"]).iloc[0]:
                     store.update_mapping(prev_label, reviewed=False)
                     approved = max(0, approved - 1)
                     console.print(f"  [magenta]Going back to:[/magenta] {prev_label}")
