@@ -2,6 +2,7 @@
 
 __version__ = "0.1.0"
 
+from calmate.apply import MappingResult, apply_labels
 from calmate.backends import AutoMapBackend, MapSuggestion, get_backend
 from calmate.mapper import map_labels
 from calmate.store import MappingStore
@@ -9,7 +10,9 @@ from calmate.store import MappingStore
 __all__ = [
     "AutoMapBackend",
     "MapSuggestion",
+    "MappingResult",
     "MappingStore",
+    "apply_labels",
     "get_backend",
     "map_labels",
     "__version__",

@@ -49,14 +49,32 @@ calmate apply data.csv --column cell_type
 ## Python API
 
 ```python
-from calmate import MappingStore, map_labels
+from calmate import MappingStore, map_labels, apply_labels
 
-# Map a list of labels
+# 1. Map a list of labels (populates the mapping store)
 store = MappingStore(".calmate/mappings.csv")
 map_labels(["beta cell", "T cell", "astrocyte"], store=store, origin="my_dataset")
 
-# Load and apply verified mappings
-mappings = store.get_mapping_dict(reviewed_only=True)
+# 2. Apply reviewed mappings to replace labels
+predicted = ["beta cell", "T cell", "astrocyte", "Treg cells"]
+result = apply_labels(predicted, store)
+
+result.mapped_labels   # ["type B pancreatic cell", "T cell", "astrocyte", "Treg cells"]
+result.label_map       # {"beta cell": "type B pancreatic cell"}
+result.unreviewed      # ["Treg cells"]  -- still needs human review
+result.unmapped        # []
+
+# 3. Print a ready-made diagnostic message
+print(result.message)
+# calmate: 1/4 unique label(s) mapped to ontology terms.
+#
+#   WARNING: 1 label(s) have unreviewed mappings and were NOT replaced:
+#     - Treg cells
+#   Run `calmate review` to approve or edit them.
+
+# 4. Optionally gate on warnings
+if result.has_warnings:
+    raise RuntimeError(result.message)
 ```
 
 ## How it works
