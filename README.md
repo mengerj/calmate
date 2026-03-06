@@ -11,14 +11,23 @@ A Python package that maps free-text cell type labels to standardized [Cell Onto
 
 ## Installation
 
+> **Note:** calmate is not yet published on PyPI. For now, install directly from GitHub.
+
 ```bash
-uv add calmate
+pip install git+https://github.com/mengerj/calmate.git
 ```
 
 With the omicverse auto-mapping backend:
 
 ```bash
-uv add "calmate[omicverse]"
+pip install "calmate[omicverse] @ git+https://github.com/mengerj/calmate.git"
+```
+
+Or, if you use `uv`:
+
+```bash
+uv add "calmate @ git+https://github.com/mengerj/calmate.git"
+uv add "calmate[omicverse] @ git+https://github.com/mengerj/calmate.git"  # with omicverse backend
 ```
 
 ## Quick start
