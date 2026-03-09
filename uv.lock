@@ -392,6 +392,7 @@ dev = [
     { name = "pytest-cov" },
 ]
 omicverse = [
+    { name = "boltons" },
     { name = "omicverse", version = "1.7.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' and python_full_version < '3.14'" },
     { name = "omicverse", version = "1.7.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or python_full_version >= '3.14'" },
     { name = "sentence-transformers" },
@@ -403,6 +404,7 @@ omicverse = [
 [package.metadata]
 requires-dist = [
     { name = "anndata", marker = "extra == 'adata'", specifier = ">=0.10" },
+    { name = "boltons", marker = "extra == 'omicverse'" },
     { name = "click", specifier = ">=8.0" },
     { name = "omicverse", marker = "extra == 'omicverse'", specifier = ">=1.6" },
     { name = "pandas", specifier = ">=2.0" },
