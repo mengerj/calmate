@@ -76,7 +76,17 @@ class OmicverseBackend(AutoMapBackend):
             )
             results = mapper.map_cells(labels)
         except Exception as exc:
-            console.print(f"[red]Semantic matching failed:[/red] {exc}")
+            # Try to surface missing dependency information if available.
+            cause = getattr(exc, "__cause__", None) or getattr(exc, "__context__", None)
+            if isinstance(cause, ModuleNotFoundError):
+                missing = getattr(cause, "name", None) or str(cause)
+                console.print(
+                    "[red]Semantic matching failed:[/red] "
+                    f"missing dependency '{missing}'. "
+                    "Install this package in the same environment as calmate/omicverse."
+                )
+            else:
+                console.print(f"[red]Semantic matching failed:[/red] {exc}")
             return []
 
         with warnings.catch_warnings():
